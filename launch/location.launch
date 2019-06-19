@@ -1,0 +1,6 @@
+<launch>
+
+  <node pkg="location" name="register" type="location_manager.py" output="screen">
+  </node>
+
+</launch>
