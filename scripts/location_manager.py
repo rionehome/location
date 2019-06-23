@@ -50,7 +50,8 @@ class LocationManager:
         with open(file, "w") as f:
             for key in self.locations.keys():
                 print(key, self.locations[key])
-                f.write("{}:{}\n".format(key, self.locations[key]))
+                location = self.locations[key]
+                f.write("{}:{},{},{}\n".format(location.name, location.x, location.y, location.z))
 
     def load_info_file(self):
         # type: () -> None
