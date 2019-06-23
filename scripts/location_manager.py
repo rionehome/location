@@ -9,6 +9,8 @@ from geometry_msgs.msg import Pose
 from tf.msg import tfMessage
 import time
 from rviz_marker import RvizMarker
+import os
+import rospkg
 
 
 class LocationManager:
@@ -24,8 +26,21 @@ class LocationManager:
         self.location = None  # type: Pose
         self.locations = {}
 
+        self.info_file = "{}/{}".format(rospkg.RosPack().get_path("navigation"),
+                                        rospy.get_param("{}/info_file".format(rospy.get_name())))
+        print(self.info_file)
+        if os.path.exists(self.info_file):
+            self.load_info_file()
         self.rviz = RvizMarker()
         rospy.spin()
+
+    def load_info_file(self):
+        with open(self.info_file, "r") as f:
+            for line in f:
+                datas = line.split(":")
+                name = datas[0]
+                data = list(map(float, datas[1].split(",")))
+                self.location[name] = data
 
     def subscribe_location_tf(self, message):
         # type: (tfMessage) -> None

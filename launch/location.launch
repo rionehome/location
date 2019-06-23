@@ -1,6 +1,7 @@
 <launch>
 
   <node pkg="location" name="register" type="location_manager.py" output="screen">
+  <param name="info_file" value="location/test.txt"/>
   </node>
 
 </launch>
