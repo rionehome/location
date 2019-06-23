@@ -11,6 +11,7 @@ import time
 from rviz_marker import RvizMarker
 import os
 import rospkg
+from std_msgs.msg import String
 
 
 class LocationManager:
@@ -22,25 +23,46 @@ class LocationManager:
         rospy.Service("/navigation/request_current_location", RequestCurrentLocation, self.request_current_location)
         rospy.Service("/navigation/request_location_list", RequestLocationList, self.request_location_list)
         rospy.Subscriber("/tf", tfMessage, self.subscribe_location_tf)
+        rospy.Subscriber("/navigation/save_location", String, self.save_location)
 
         self.location = None  # type: Pose
         self.locations = {}
 
-        self.info_file = "{}/{}".format(rospkg.RosPack().get_path("navigation"),
-                                        rospy.get_param("{}/info_file".format(rospy.get_name())))
-        print(self.info_file)
+        self.info_file = "{}/location/{}".format(rospkg.RosPack().get_path("location"),
+                                                 rospy.get_param("{}/info_file".format(rospy.get_name())))
+
         if os.path.exists(self.info_file):
             self.load_info_file()
         self.rviz = RvizMarker()
         rospy.spin()
 
+    def save_location(self, message):
+        # type: (String) -> None
+        """
+        ROS Subscriber関数
+        Subscriberで送られてきたテキストファイル名で場所情報を保存する
+        :param message: Stringメッセージ
+        :return:
+        """
+        file = "{}/location/{}".format(rospkg.RosPack().get_path("location"), message.data)
+        print(file)
+        with open(file, "w") as f:
+            for key in self.locations.keys():
+                print(key, self.locations[key])
+                f.write("{}:{}\n".format(key, self.locations[key]))
+
     def load_info_file(self):
+        # type: () -> None
+        """
+        場所情報のファイルからデータを読み込む
+        :return: 
+        """
         with open(self.info_file, "r") as f:
             for line in f:
                 datas = line.split(":")
                 name = datas[0]
                 data = list(map(float, datas[1].split(",")))
-                self.location[name] = data
+                self.locations[name] = data
 
     def subscribe_location_tf(self, message):
         # type: (tfMessage) -> None
