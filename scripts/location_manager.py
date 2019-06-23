@@ -65,7 +65,9 @@ class LocationManager:
                 datas = line.split(":")
                 name = datas[0]
                 data = list(map(float, datas[1].split(",")))
-                self.locations[name] = data
+                location = Location(name, data[0], data[1], data[2])
+                self.locations[name] = location
+                print(name, data)
 
     def subscribe_location_tf(self, message):
         # type: (tfMessage) -> None
