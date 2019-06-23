@@ -45,7 +45,8 @@ class LocationManager:
         :return:
         """
         file = "{}/location/{}".format(rospkg.RosPack().get_path("location"), message.data)
-        print(file)
+        print("***** Save Location *****")
+        print("-> {}".format(file))
         with open(file, "w") as f:
             for key in self.locations.keys():
                 print(key, self.locations[key])
@@ -57,6 +58,8 @@ class LocationManager:
         場所情報のファイルからデータを読み込む
         :return: 
         """
+        print("***** Load Location *****")
+        print("<- {}".format(self.info_file))
         with open(self.info_file, "r") as f:
             for line in f:
                 datas = line.split(":")
