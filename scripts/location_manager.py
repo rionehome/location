@@ -25,7 +25,7 @@ class LocationManager:
         rospy.Subscriber("/tf", tfMessage, self.subscribe_location_tf)
         rospy.Subscriber("/navigation/save_location", String, self.save_location)
 
-        self.location = None  # type: Pose
+        self.location = None
         self.locations = {}
 
         self.info_file = "{}/location/{}".format(rospkg.RosPack().get_path("location"),
