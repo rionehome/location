@@ -60,16 +60,7 @@ class LocationManager:
         :return:
         """
         file = "{}/location/{}".format(rospkg.RosPack().get_path("location"), message.data)
-        print("***** Load Location *****")
-        print("<- {}".format(file))
-        with open(file, "r") as f:
-            for line in f:
-                datas = line.split(":")
-                name = datas[0]
-                data = list(map(float, datas[1].split(",")))
-                location = Location(name, data[0], data[1], data[2])
-                self.locations[name] = location
-                print(name, data)
+        self.load_info_file(file)
 
     def load_info_file(self, path):
         # type: () -> None
