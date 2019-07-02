@@ -33,7 +33,7 @@ class LocationManager:
             path = "{}/location/{}".format(rospkg.RosPack().get_path("location"), info_file)
             if os.path.exists(path):
                 self.load_info_file(path)
-            self.rviz = RvizMarker()
+        self.rviz = RvizMarker()
         rospy.spin()
 
     def save_location(self, message):
