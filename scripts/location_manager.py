@@ -18,6 +18,7 @@ class LocationManager:
 
     def __init__(self):
         rospy.init_node('navigation', anonymous=False)
+
         rospy.Service("/navigation/register_current_location", RegisterLocation, self.register_current_location)
         rospy.Service("/navigation/request_location", RequestLocation, self.request_location)
         rospy.Service("/navigation/request_current_location", RequestCurrentLocation, self.request_current_location)
@@ -29,11 +30,14 @@ class LocationManager:
         self.location = None
         self.locations = {}
         info_file = rospy.get_param("{}/info_file".format(rospy.get_name()), None)
+        self.rviz = RvizMarker()
+
+        rospy.sleep(0.5)
+
         if info_file is not None:
             path = "{}/location/{}".format(rospkg.RosPack().get_path("location"), info_file)
             if os.path.exists(path):
                 self.load_info_file(path)
-        self.rviz = RvizMarker()
         rospy.spin()
 
     def save_location(self, message):
@@ -77,7 +81,7 @@ class LocationManager:
                 data = list(map(float, datas[1].split(",")))
                 location = Location(name, data[0], data[1], data[2])
                 self.locations[name] = location
-                print(name, data)
+                self.rviz.register(location)
 
     def subscribe_location_tf(self, message):
         # type: (tfMessage) -> None

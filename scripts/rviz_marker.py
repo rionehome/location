@@ -24,7 +24,7 @@ class RvizMarker:
         # type: (dict) -> None
         self.locations = {}
         self.marker_id = 0
-        self.frame_id = "map"
+        self.frame_id = "odom"
         self.ns = "location_markers"
 
         self.publisher = rospy.Publisher("location/marker", Marker, queue_size=10)
@@ -65,6 +65,7 @@ class RvizMarker:
         marker_sphere.scale = scale
         marker_sphere.color = ColorRGBA(r, g, b, 0.5)
         self.marker_id += 1
+        print(self.marker_id)
 
         return [marker_sphere, marker_str]
 
@@ -77,6 +78,7 @@ class RvizMarker:
         """
         print("[Register] %s (%s %s)" % (message.name, message.x, message.y))
         markers = self.create_marker(message)
+        print(markers)
         self.locations[message.name] = Data(message, markers)
         for marker in markers:
             self.publisher.publish(marker)
