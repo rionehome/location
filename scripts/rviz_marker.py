@@ -78,7 +78,6 @@ class RvizMarker:
         """
         print("[Register] %s (%s %s)" % (message.name, message.x, message.y))
         markers = self.create_marker(message)
-        print(markers)
         self.locations[message.name] = Data(message, markers)
         for marker in markers:
             self.publisher.publish(marker)
