@@ -3,9 +3,7 @@
 
 import rospy
 from location.srv import *
-from location.msg import *
-from geometry_msgs.msg import PoseWithCovarianceStamped
-from geometry_msgs.msg import Pose
+from location.msg import Location
 from tf.msg import tfMessage
 import time
 from rviz_marker import RvizMarker
@@ -19,13 +17,13 @@ class LocationManager:
     def __init__(self):
         rospy.init_node('navigation', anonymous=False)
 
-        rospy.Service("/navigation/register_current_location", RegisterLocation, self.register_current_location)
-        rospy.Service("/navigation/request_location", RequestLocation, self.request_location)
-        rospy.Service("/navigation/request_current_location", RequestCurrentLocation, self.request_current_location)
-        rospy.Service("/navigation/request_location_list", RequestLocationList, self.request_location_list)
+        rospy.Service("/location/register_current_location", RegisterLocation, self.register_current_location)
+        rospy.Service("/location/request_location", RequestLocation, self.request_location)
+        rospy.Service("/location/request_current_location", RequestCurrentLocation, self.request_current_location)
+        rospy.Service("/location/request_location_list", RequestLocationList, self.request_location_list)
         rospy.Subscriber("/tf", tfMessage, self.subscribe_location_tf)
-        rospy.Subscriber("/navigation/save_location", String, self.save_location)
-        rospy.Subscriber("/navigation/load_location", String, self.load_location)
+        rospy.Subscriber("/location/save_location", String, self.save_location)
+        rospy.Subscriber("/location/load_location", String, self.load_location)
 
         self.location = None
         self.locations = {}
@@ -48,26 +46,26 @@ class LocationManager:
         :param message: Stringメッセージ
         :return:
         """
-        file = "{}/location/{}".format(rospkg.RosPack().get_path("location"), message.data)
+        file_name = "{}/location/{}".format(rospkg.RosPack().get_path("location"), message.data)
         print("***** Save Location *****")
-        print("-> {}".format(file))
-        with open(file, "w") as f:
+        print("-> {}".format(file_name))
+        with open(file_name, "w") as f:
             for key in self.locations.keys():
                 print(key, self.locations[key])
                 location = self.locations[key]
                 f.write("{}:{},{},{}\n".format(location.name, location.x, location.y, location.z))
 
     def load_location(self, message):
-        # type: () -> None
+        # type: (String) -> None
         """
         場所情報のファイルからデータを読み込む
         :return:
         """
-        file = "{}/location/{}".format(rospkg.RosPack().get_path("location"), message.data)
-        self.load_info_file(file)
+        file_name = "{}/location/{}".format(rospkg.RosPack().get_path("location"), message.data)
+        self.load_info_file(file_name)
 
     def load_info_file(self, path):
-        # type: () -> None
+        # type: (str) -> None
         """
         場所情報のファイルからデータを読み込む
         :return:
@@ -95,16 +93,6 @@ class LocationManager:
                 translation = transform.transform.translation
                 self.location = (translation.x, translation.y, translation.z)
 
-    '''
-    def subscribe_location(self, message):
-        # type: (PoseWithCovarianceStamped) -> None
-        """
-        現在位置を取得し続ける
-        :param message:
-        :return:
-        """
-        self.location = message.pose.pose
-    '''
 
     def register_current_location(self, message):
         # type: (RegisterLocationRequest) -> RegisterLocationResponse

@@ -4,16 +4,13 @@
 import random
 import rospy
 from location.msg import Location
-from location.srv import *
-from std_msgs.msg import String, Header, ColorRGBA
+from std_msgs.msg import String, ColorRGBA
 from visualization_msgs.msg import Marker
-from geometry_msgs.msg import Pose, Vector3, Point, Quaternion
-import csv
-import os
+from geometry_msgs.msg import Vector3, Point
 
 class Data:
     def __init__(self, location, markers):
-        # type: (Location, Marker) -> None
+        # type: (Location, list) -> None
         self.location = location
         self.markers = markers
 
@@ -21,13 +18,13 @@ class Data:
 class RvizMarker:
 
     def __init__(self):
-        # type: (dict) -> None
+        # type: () -> None
         self.locations = {}
         self.marker_id = 0
         self.frame_id = "odom"
         self.ns = "location_markers"
 
-        self.publisher = rospy.Publisher("location/marker", Marker, queue_size=10)
+        self.publisher = rospy.Publisher("/location/marker", Marker, queue_size=10)
 
     def create_marker(self, message):
         # type: (Location) -> (Marker, Marker)

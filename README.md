@@ -13,13 +13,13 @@ roslaunch location location.launch
 
 ### Service
 
-* **`/navigation/register_current_location`** 現在位置の登録 ( location/RegisterLocation )
+* **`/location/register_current_location`** 現在位置の登録 ( location/RegisterLocation )
 
-* **`/navigation/request_location`** 登録場所の要求 ( location/RequestLocation )
+* **`/location/request_location`** 登録場所の要求 ( location/RequestLocation )
 
-* **`/navigation/request_current_location`** 音声認識の開始要求 ( location/RequestCurrentLocation )
+* **`/location/request_current_location`** 現在の場所を要求 ( location/RequestCurrentLocation )
 
-* **`/navigation/request_location_list`** 登録されているすべての場所の情報を要求 ( location/RequestLocationList )
+* **`/location/request_location_list`** 登録されているすべての場所の情報を要求 ( location/RequestLocationList )
 
 
 ### msg
